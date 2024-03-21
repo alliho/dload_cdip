@@ -122,10 +122,10 @@ function [tstart tend starti endi Nt] = get_tinfo(baseurl, cdipname, tlims,mode,
     tvarstr = 'waveTime';
     if contains(varname, 'acm')
         tvarstr = 'acmTime';
-        if strcmp(mode, 'hist');
-            tstart = tlims(1); tend = tlims(2); starti=1; endi=1; Nt=1;
-            return
-        end
+        % if strcmp(mode, 'hist');
+        %     tstart = tlims(1); tend = tlims(2); starti=1; endi=1; Nt=1;
+        %     return
+        % end
     elseif contains(varname, 'gps')
         tvarstr = 'gpsTime';
     end
@@ -146,7 +146,10 @@ function [tstart tend starti endi Nt] = get_tinfo(baseurl, cdipname, tlims,mode,
 
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %%% FIND VAR = Nt   
-    idx = find(contains(info, ['Int32 ' tvarstr '[' tvarstr ' = '])); idx = idx(1);    
+    idx = find(contains(info, ['Int32 ' tvarstr '[' tvarstr ' = '])); 
+    if isempty(idx); tstart = tlims(1); tend = tlims(2); starti=1; endi=1; Nt=1; return; end
+    idx = idx(1);    
+    
     infot = strsplit(info{idx}, '= '); infot = infot{2};
     Nt = str2num(infot(1:end-2))-1;
     
