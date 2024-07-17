@@ -73,6 +73,7 @@ nameurl = [cdipname 'p1/' cdipname 'p1_historic.nc.ascii?'];
 % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 %%% FIRST: get tinfo and limit time series if need be
 [tstart, tend, starti, endi, Nt] = get_tinfo(baseurl, cdipname, tlims,mode);
+
 % check if starti, endi, tres, are even/logical
 tt = [starti:tres:endi];
 endi = tt(end);
@@ -87,12 +88,12 @@ if endi~=starti
     % Load frequency
     paramurl = ['waveFrequency' fstr];
     url = [baseurl nameurl paramurl]; %full url name
-    f_cdip = dload(url);
+    f_cdip_1 = dload(url);
     
     % Load bandwidthh
     paramurl = ['waveBandwidth' fstr];
     url = [baseurl nameurl paramurl]; %full url name
-    bw_cdip = dload(url);
+    bw_cdip_1 = dload(url);
 
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %%% AND THEN: create empty variable, url name, load data, reshape
@@ -159,12 +160,12 @@ if endi~=starti & endi>starti
     % Load frequency
     paramurl = ['waveFrequency' fstr];
     url = [baseurl nameurl paramurl]; %full url name
-    f_cdip = dload(url);
+    f_cdip_2 = dload(url);
 
     % Load bandwidthh
     paramurl = ['waveBandwidth' fstr];
     url = [baseurl nameurl paramurl]; %full url name
-    bw_cdip = dload(url);
+    bw_cdip_2 = dload(url);
     
     % - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     %%% AND THEN: create empty variable, url name, load data, reshape
@@ -211,9 +212,17 @@ try
     t_cdip = [t_cdip_1 t_cdip_2];
 
 catch
-    spec_cdip = [spec_cdip_2];
-    t_cdip = [t_cdip_2];
+    % if t_cdip_
+    spec_cdip_2 = interp2d(t_cdip_2, f_cdip_2, spec_cdip_2, t_cdip_2, f_cdip_1);
 
+    spec_cdip = [spec_cdip_1 spec_cdip_2];
+    t_cdip = [t_cdip_1 t_cdip_2];
+end
+
+if exist('f_cdip_1')
+    f_cdip = f_cdip_1;
+else
+    f_cdip = f_cdip_2;
 end
 
 

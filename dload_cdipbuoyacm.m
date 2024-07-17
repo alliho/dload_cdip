@@ -32,7 +32,8 @@ cdip.speed  = dload_cdipvar(cdipid, varname, tlims, tres);
 varname = 'acmDirection';
 cdip.dir  = dload_cdipvar(cdipid, varname, tlims, tres);
 
-r = cdip.speed; theta = deg2rad(cdip.dir);
+% r = cdip.speed; theta = deg2rad(cdip.dir);
+r = cdip.speed; theta = deg2rad(oc2pol(cdip.dir));
 cdip.u = r.*cos(theta); cdip.v = r.*sin(theta);
 
 
