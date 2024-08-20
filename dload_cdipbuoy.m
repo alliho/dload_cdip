@@ -46,6 +46,7 @@ for i=1:length(varargin)
 end
 
 %% LOAD
+cdip.id = cdipid;
 cdip.depth = dload_cdipdepth(cdipid);
 [cdip.lat0, cdip.lon0] = dload_cdiplatlon(cdipid);
 % -------------------------------------------------------------------------
