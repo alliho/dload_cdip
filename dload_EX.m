@@ -8,8 +8,8 @@
 %    4) dload_ww3var    |   download ww3 model output at buoy 
 %                           (CAUTION: CODE NEEDS TO BE UPDATED)
 
-%% first, add path
-addpath(genpath('./dload_cdip_v4/'))
+%% first, add folder (may need to adjust path)
+addpath(genpath('./dload_cdip/'))
 
 %% EX 1): dload_cdipbuoy
 cdipid = 067;
