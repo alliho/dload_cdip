@@ -18,7 +18,7 @@ tres = 1;
 
 % downloads all parameters, omiting fourier coefficients ------------------
 clear cdip;
-cdip = dload_cdipbuoy(cdipid, daterange,tres, 'omit', {'a1', 'b1', 'a2', 'b2', 'check', 'md'});
+cdip = dload_cdipbuoy(cdipid, daterange,tres, 'omit', {'a1', 'b1', 'a2', 'b2'});
 
 % plot --------------------------------------------------------------------
 
