@@ -18,9 +18,13 @@ function [spec_cdip f_cdip t_cdip bw_cdip] = dload_cdipspec(cdipid,varname,tlims
 %   Uses:
 %      get_tinfo.m (subfunction)
 % 
+%   Usage Note: 
+%       CDIP's THREDDS server won't download datasets over 50 Mb,
+%       so use caution downloading multiple decades of spectral data. 
+% 
 % Created 08-18-2019 by Alli Ho
-% Updated as of 08-18-2019 by Alli Ho
 % Updated 12-13-2021 to account for CDIP server syntax change? 
+% Note added 03-11-2025 to note for issue downloading large datasets 
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
 % -------------------------------------------------------------------------
@@ -103,7 +107,9 @@ if endi~=starti
         paramurl = ['wave' varname tstring fstr];
         var_cdip = NaN(fN,Nt);
         url = [baseurl nameurl paramurl]; %full url name
-        data = urlread(url); data = strsplit(data,'\n');
+
+        [data] = dload(url, 'trim',0);
+
         dstart = find(strcmp(data,'---------------------------------------------'))+1;
 
         for j=1:Nt
@@ -175,7 +181,9 @@ if endi~=starti & endi>starti
         paramurl = ['wave' varname tstring fstr];
         var_cdip = NaN(fN,Nt);
         url = [baseurl nameurl paramurl]; %full url name
-        data = urlread(url); data = strsplit(data,'\n');
+
+        [data] = dload(url, 'trim',0);
+
         dstart = find(strcmp(data,'---------------------------------------------'))+1;
 
         for j=1:Nt
@@ -339,10 +347,30 @@ function [simpletime, idx] = get_simpletime(baseurl, cdipname, mode, starti, end
     simpletime = double(waveVar)./(24*60*60) + toff; % the course resolution data, corresponding indexes in VAR=idx
 end
 
-function [var] = dload(url) % download thredds data from url
-    data = urlread(url); data = strsplit(data,'\n');
-    dstart = find(strcmp(data,'---------------------------------------------'))+1;
+function [var] = dload(url, varargin) % download thredds data from url
+    p = inputParser;
+    addParameter(p, 'trim', 1);
+    parse(p, varargin{:});
+    trimopt = p.Results.trim;
 
-    var = strsplit(data{dstart+1}, ', ');
-    var = cellfun(@str2double,var);
+    try
+        data = urlread(url); 
+    catch %%% report error message from THREDDS page
+        req = matlab.net.http.RequestMessage;
+        req.Method = matlab.net.http.RequestMethod.GET;
+        response = send(req, url);
+        if contains(response.Body.Data, 'Too Large')
+            disp('   *** WARNING *** ')
+            disp('   Date range is too large to download for CDIP THREDDS server.')
+        end
+        error(response.Body.Data); %%% EXIT
+    end
+
+    data = strsplit(data,'\n');
+
+    if trimopt
+        dstart = find(strcmp(data,'---------------------------------------------'))+1;
+        var = strsplit(data{dstart+1}, ', ');
+        var = cellfun(@str2double,var);
+    end
 end
