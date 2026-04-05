@@ -183,6 +183,7 @@ if endi~=starti & endi>starti
         url = [baseurl nameurl paramurl]; %full url name
 
         [data] = dload(url, 'trim',0);
+        % [data] = dload(url);
 
         dstart = find(strcmp(data,'---------------------------------------------'))+1;
 
@@ -367,6 +368,7 @@ function [var] = dload(url, varargin) % download thredds data from url
     end
 
     data = strsplit(data,'\n');
+    var = data;
 
     if trimopt
         dstart = find(strcmp(data,'---------------------------------------------'))+1;
