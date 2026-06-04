@@ -55,9 +55,8 @@ cdip.time  = dload_cdipvar(cdipid, varname, tlims, tres);
 
 
 
-varnms = [{'Hs', 'Tp', 'gpsLatitude', 'gpsLongitude', 'Dp'}];
-fldnms = [{'hs', 'tp', 'lat', 'lon', 'dp'}];
-fldnms = [{'hs', 'tp', 'lat', 'lon', 'dp'}];
+varnms = [{'Hs', 'Tp', 'gpsLatitude', 'gpsLongitude', 'Dp', 'sstSeaSurfaceTemperature'}];
+fldnms = [{'hs', 'tp', 'lat', 'lon', 'dp', 'sst'}];
 
 if omiopt
     idx = find(~contains(fldnms,omi));
@@ -67,6 +66,11 @@ elseif incopt
     idx = find(contains(fldnms,inc));
     varnms = varnms(idx);
     fldnms = fldnms(idx);
+end
+
+if sum(contains(fldnms, 'sst')); 
+    varnms = [varnms {'sstTime'}];
+    fldnms = [fldnms {'sst_time'}];
 end
 
 for i=1:length(varnms)

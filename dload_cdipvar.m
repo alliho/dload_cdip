@@ -48,6 +48,10 @@ if varname(1)=='g' | varname(1)=='w' | varname(1:2)=='dw' | varname(1)=='a' | va
     paramhead = '';
 end
 
+% if contains(varname, 'sst'); 
+%     paramhead = 'sst'; varname = erase(varname, 'sst'); 
+% end
+
 %% LOAD HISTORIC CDIP DATA FROM CDIP THREDDS
 % -------------------------------------------------------------------------
 %%% observations (buoys)
@@ -128,6 +132,8 @@ function [tstart tend starti endi Nt] = get_tinfo(baseurl, cdipname, tlims,mode,
         % end
     elseif contains(varname, 'gps')
         tvarstr = 'gpsTime';
+    elseif contains(varname, 'sst')
+        tvarstr = 'sstTime';
     end
     
     if strcmp(mode, 'hist')
@@ -232,6 +238,9 @@ function [simpletime, idx] = get_simpletime(baseurl, cdipname, varname, mode, st
     end
     if contains(varname, 'gps')
         tvarstr = 'gpsTime';
+    end
+    if contains(varname, 'sst')
+        tvarstr = 'sstTime';
     end
     
     %5B43:100:246843%5D
